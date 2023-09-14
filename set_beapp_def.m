@@ -194,7 +194,13 @@ grp_proc_info.beapp_event_eprime_values.condition_names = {''};
 grp_proc_info.beapp_event_eprime_values.event_codes = []; % 2d array -- groups x condition codes
 grp_proc_info.event_tag_offsets = 0; % def = 0 OR 'input_table'. Event offset in ms. If offset is not uniform across dataset, set to input_table and input information as in evt_file_info_table example 
 grp_proc_info.beapp_event_use_tags_only  = 0; % def =0 (use event codes/tags/strings and condition/cel information). 1 = use event codes/tags/strings only for segmenting
-
+%% Fromating specifications: adding in events retroactively
+grp_proc_info.update_events = 0; % toggle on if you need to artificially add events in
+grp_proc_info.metadata_path = ''; %if update_events set to 1, it will load your event info from this sheet
+grp_proc_info.metadata_path_sheet_name = ''; %load specific sheet name from that excel sheet
+grp_proc_info.pseudo_randomization_order_path = ''; %if update_events set to 1, it will load trial level randomization info from this sheet;
+grp_proc_info.paradigm = ''; %what paradigm/row we should be pulling information from 
+grp_proc_info.override_happe_av_reference = 0 %default 0, if turned on, happe will instead use the kind of referencing set in the reference module of the user inputs
 %% Formatting specifications: Behavioral Coding
 grp_proc_info.behavioral_coding.events = {''}; % def = {''}. Ex {'TRSP'} Events containing behavioral coding information
 grp_proc_info.behavioral_coding.keys = {''}; % def = {''} Keys in events containing behavioral coding information

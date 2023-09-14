@@ -180,15 +180,27 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     %interpolate channels marked bad above, reference data
                     EEG_out = pop_interp(EEG_out, full_selected_channels, 'spherical');
                 end
-                EEG_out = pop_reref(EEG_out, [], 'exclude', ind_marked_bad_chans);
+                if ~grp_proc_info_in.override_happe_av_reference |grp_proc_info_in.reref_typ == 1;
+
+                    EEG_out = pop_reref(EEG_out, [], 'exclude', ind_marked_bad_chans);
+                else
+                    if grp_proc_info_in.reref_typ == 4 | grp_proc_info_in.reref_typ == 2;
+                        error('HAPPE V1.0 Only supports average re-reference and specific electrode re-reference, check grp_proc_info.reref_typ and rerun');
+                    end
+                    file_proc_info.net_reref_chan_inds = grp_proc_info_in.beapp_reref_chan_inds{uniq_net_ind};
+                    [~,updated_ref_inds, ~] = intersect({EEG_tmp.chanlocs.labels}, {EEG_orig.chanlocs(file_proc_info.net_reref_chan_inds).labels});
+                    if isempty(updated_ref_inds)
+                        error(['Your reference rows' EEG_orig.chanlocs(file_proc_info.net_reref_chan_inds).labels 'were not found in the channels selected for happe processing, check user inputs and retry'] )
+                    end
+                    EEG_out = pop_reref (EEG_out, [updated_ref_inds], 'keepref', 'on','exclude',ind_marked_bad_chans);
+                end
             end
-            
             eeg{curr_rec_period} = NaN(size(eeg{curr_rec_period}));
             [~,~,inds_in_dict]=intersect({EEG_out.chanlocs.labels},chan_name_indx_dict(:,1),'stable');
             eeg{curr_rec_period}(cell2mat(chan_name_indx_dict(inds_in_dict,2)),:) = EEG_out.data;
             clear chan_name_indx_dict
         end
-        
+
         file_ica_toc = toc;
         file_proc_info.ica_stats.Time_Elapsed_For_File = {num2str(file_ica_toc/60)};
         
@@ -223,9 +235,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         if ~all(cellfun(@isempty,eeg))            
             file_proc_info = beapp_prepare_to_save_file('ica',file_proc_info, grp_proc_info_in, src_dir{1});
-            if grp_proc_info_in.beapp_ica_type ==3
+            if grp_proc_info_in.beapp_ica_type ==3 &&~skip_file
                 save(file_proc_info.beapp_fname{1},'eeg','file_proc_info','icaweights','icasphere');
-            else 
+            elseif ~skip_file
                 save(file_proc_info.beapp_fname{1},'eeg','file_proc_info');
             end 
             %pop_saveset(EEG_out,[strrep(file_proc_info.beapp_fname{1},'mat','') '_post_ICA']);
@@ -234,6 +246,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         clearvars -except grp_proc_info_in curr_file src_dir ICA_report_table cleanline_path ica_report_struct
     end
 end
+
 
 % save report if user selected option
 cd (grp_proc_info_in.beapp_genout_dir{1})

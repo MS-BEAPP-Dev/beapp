@@ -181,6 +181,10 @@ beapp_happe_V3_module_warning(grp_proc_info_main.beapp_toggle_mods)
     % run pipeline modules
     if grp_proc_info_main.beapp_toggle_mods{'format','Module_On'}
         grp_proc_info_main = batch_beapp_format(grp_proc_info_main);
+        if grp_proc_info_main.update_events
+            %update_click_events(grp_proc_info_main)
+            update_click_events_randomized(grp_proc_info_main)
+        end
     end
     
     if grp_proc_info_main.beapp_toggle_mods{'prepp','Module_On'}
