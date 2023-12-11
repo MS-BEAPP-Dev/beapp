@@ -137,7 +137,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                     
                     % use beapp event list, since EEGLAB list will count
                     % multiple valid tags in one segment
-                    
+                    [~,index] = sortrows([file_proc_info.evt_info{curr_epoch}.evt_times_micros_rel].'); file_proc_info.evt_info{curr_epoch} = file_proc_info.evt_info{curr_epoch}(index); clear index
                     all_tag_list = {file_proc_info.evt_info{curr_epoch}(:).type};
                     non_targ_idx = find(ismember(all_tag_list, 'Non_Target'));
                     all_tag_list(non_targ_idx) = [];
