@@ -250,7 +250,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
         end
         
         diary on;
-        
+        file_proc_info.evt_conditions_being_analyzed.Condition_Name(cellfun('isempty',file_proc_info.evt_conditions_being_analyzed.Condition_Name)) = {''};
         [conds_all,cond_inds_table_all,cond_inds_values_all]=intersect(file_proc_info.evt_conditions_being_analyzed.Condition_Name,...
             file_proc_info.grp_wide_possible_cond_names_at_segmentation,'stable');
         file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));
@@ -270,7 +270,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
         
         if ~all(cellfun(@isempty,eeg_w))
             file_proc_info = beapp_prepare_to_save_file('segment',file_proc_info, grp_proc_info_in, src_dir{1});
-            save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w');
+            save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w','-v7.3');
         end
         clearvars -except grp_proc_info_in curr_file src_dir
     end
