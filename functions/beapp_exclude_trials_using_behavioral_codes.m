@@ -53,13 +53,14 @@ for curr_epoch = 1:length(evt_info)
         
             % if tag is evt tag AND there isn't already a behavioral code,
             % use the saved behavioral code for this tag
-        elseif ~strcmp(char(evt_info{curr_epoch}(curr_tag).type),'Non_Target')
+            if ~strcmp(char(evt_info{curr_epoch}(curr_tag).type),'Non_Target')
              evt_info{curr_epoch}(curr_tag).behav_code = behav_value_current;
              
              % if bad value, exclude this event
-             if behav_value_current
-                evt_info{curr_epoch}(curr_tag).type = 'Non_Target';
-             end
+                if behav_value_current
+                    evt_info{curr_epoch}(curr_tag).type = 'Non_Target';
+                end
+            end
         end     
     end
 end
