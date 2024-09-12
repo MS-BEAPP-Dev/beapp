@@ -148,7 +148,7 @@ end
 %% MUSCIL SECTION MAPPED
 if ~params.paradigm.ERP.on
     params.muscIL = grp_proc_info.muscIL_on ; 
-else; params.muscIL = 0;
+else; params.muscIL = grp_proc_info.muscIL_on;
 end
 %% SEGMENTATION SECTION MAPPED
 params.segment.on = grp_proc_info.happe_segment_on;  % on by default

@@ -217,7 +217,7 @@ else
             ' processing time. Recommended for files with significant' ...
             ' muscle artifact.\n']) ;
         params.muscIL = 0 ; %set to no for now, but could ad as option in future? choose2('N', 'Y') ;
-    else; params.muscIL = 0;
+    else; params.muscIL = grp_proc_info.muscIL_on;
     end
     %% SEGMENTATION SECTION MAPPED
     % fprintf('Segment data? [Y/N]\n') ;

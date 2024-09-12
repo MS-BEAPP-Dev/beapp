@@ -151,7 +151,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             [~,ind_marked_bad_chans]= intersect({file_proc_info.net_vstruct.labels},setdiff({full_selected_channels.labels},{EEG_tmp.chanlocs.labels}),'stable');
             %ERROR REPORTED HERE: horzcat error; ind_marked_bad_chans was a
             %column, can't be concatenated with a row
-            file_proc_info.beapp_bad_chans{curr_rec_period} = unique([file_proc_info.beapp_bad_chans{curr_rec_period} ind_marked_bad_chans]);
+            try
+                file_proc_info.beapp_bad_chans{curr_rec_period} = unique([file_proc_info.beapp_bad_chans{curr_rec_period} ind_marked_bad_chans]);
+            catch
+                file_proc_info.beapp_bad_chans{curr_rec_period} = [file_proc_info.beapp_bad_chans{curr_rec_period}' ind_marked_bad_chans]
+            end
             
             % if HAPPE is selected, run wICA on file
             if grp_proc_info_in.beapp_ica_type == 2
