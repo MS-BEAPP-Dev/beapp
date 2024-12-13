@@ -61,9 +61,14 @@ for curr_condition = 1:length(user_set_condition_names)
     else 
         eeg_w{curr_condition,1}  = [];
     end
-end 
+end
 elseif data_type == 1
     eeg_w{1,1} = eeg;
+    file_proc_info.grp_wide_possible_cond_names_at_segmentation = {'baseline'};
+    file_proc_info.evt_conditions_being_analyzed = table(NaN,{'baseline'},{''},...
+        NaN(1,1),NaN(1,1),NaN(1,1),...
+        'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes',...
+        'Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
 end
 
 if all(cellfun(@isempty,eeg_w))

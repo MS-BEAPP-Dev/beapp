@@ -181,6 +181,9 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                         
                         targ_cond_logical = ismember(all_tag_list, file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition});
                         
+                        if ~ismember(1,targ_cond_logical) %If this tag is not found , skip
+                            continue
+                        end
                         % keep good segments of this condition type
                         segs_to_keep = all([targ_cond_logical; tmp_EEG_struct_rejglobal]);
                         file_proc_info.evt_conditions_being_analyzed.Num_Segs_Pre_Rej(curr_condition) = sum(targ_cond_logical);
