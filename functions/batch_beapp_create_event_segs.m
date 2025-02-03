@@ -41,8 +41,10 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
     cd(src_dir{1});
     
     if exist(grp_proc_info_in.beapp_fname_all{curr_file},'file')
-        
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+        if strcmp(lastwarn,'Variable ''eeg'' not found.')
+            error('eeg variable not found for this file, check that you have continous data (and not already segmented data in your source directory')
+        end
         tic;
         
         % version control for beta testers (new fields, offset fix)
@@ -271,7 +273,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
         
         if ~all(cellfun(@isempty,eeg_w))
             file_proc_info = beapp_prepare_to_save_file('segment',file_proc_info, grp_proc_info_in, src_dir{1});
-            save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w');
+            save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w','-v7.3');
         end
         clearvars -except grp_proc_info_in curr_file src_dir
     end

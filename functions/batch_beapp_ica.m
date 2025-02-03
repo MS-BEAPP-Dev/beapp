@@ -151,7 +151,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             [~,ind_marked_bad_chans]= intersect({file_proc_info.net_vstruct.labels},setdiff({full_selected_channels.labels},{EEG_tmp.chanlocs.labels}),'stable');
             %ERROR REPORTED HERE: horzcat error; ind_marked_bad_chans was a
             %column, can't be concatenated with a row
-            file_proc_info.beapp_bad_chans{curr_rec_period} = unique([file_proc_info.beapp_bad_chans{curr_rec_period} ind_marked_bad_chans]);
+            try
+                file_proc_info.beapp_bad_chans{curr_rec_period} = unique([file_proc_info.beapp_bad_chans{curr_rec_period} ind_marked_bad_chans]);
+            catch
+                file_proc_info.beapp_bad_chans{curr_rec_period} = [file_proc_info.beapp_bad_chans{curr_rec_period}' ind_marked_bad_chans]
+            end
             
             % if HAPPE is selected, run wICA on file
             if grp_proc_info_in.beapp_ica_type == 2
@@ -194,13 +198,12 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     EEG_out = pop_reref (EEG_out, [updated_ref_inds], 'keepref', 'on','exclude',ind_marked_bad_chans);
                 end
             end
-            
             eeg{curr_rec_period} = NaN(size(eeg{curr_rec_period}));
             [~,~,inds_in_dict]=intersect({EEG_out.chanlocs.labels},chan_name_indx_dict(:,1),'stable');
             eeg{curr_rec_period}(cell2mat(chan_name_indx_dict(inds_in_dict,2)),:) = EEG_out.data;
             clear chan_name_indx_dict
         end
-        
+
         file_ica_toc = toc;
         file_proc_info.ica_stats.Time_Elapsed_For_File = {num2str(file_ica_toc/60)};
         
@@ -235,9 +238,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         if ~all(cellfun(@isempty,eeg))            
             file_proc_info = beapp_prepare_to_save_file('ica',file_proc_info, grp_proc_info_in, src_dir{1});
-            if grp_proc_info_in.beapp_ica_type ==3
+            if grp_proc_info_in.beapp_ica_type ==3 &&~skip_file
                 save(file_proc_info.beapp_fname{1},'eeg','file_proc_info','icaweights','icasphere');
-            else 
+            elseif ~skip_file
                 save(file_proc_info.beapp_fname{1},'eeg','file_proc_info');
             end 
             %pop_saveset(EEG_out,[strrep(file_proc_info.beapp_fname{1},'mat','') '_post_ICA']);
@@ -246,6 +249,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         clearvars -except grp_proc_info_in curr_file src_dir ICA_report_table cleanline_path ica_report_struct
     end
 end
+
 
 % save report if user selected option
 cd (grp_proc_info_in.beapp_genout_dir{1})

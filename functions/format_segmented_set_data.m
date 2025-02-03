@@ -69,7 +69,6 @@ elseif data_type == 1
         NaN(1,1),NaN(1,1),NaN(1,1),...
         'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes',...
         'Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
-
 end
 
 if all(cellfun(@isempty,eeg_w))
